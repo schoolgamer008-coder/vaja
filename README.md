@@ -1,2 +1,1 @@
-# vaja
-vaja
+snake game in pygame
