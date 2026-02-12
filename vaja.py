@@ -16,7 +16,7 @@ picture = pygame.image.load("pygameimage1.jpg")
 picture = pygame.transform.scale(picture, (WIDTH, HEIGHT))
 
 BLOCK_SIZE = 20
-FPS = 360
+FPS = 10
 
 WHITE = (255, 255, 255)
 RED = (200, 0, 0)
@@ -28,7 +28,8 @@ def draw_score(score):
     return None
 
 def draw_snake(snake_list):
-    return None
+    for block in snake_list:
+        pygame.draw.rect(canvas, GREEN, [block[0], block[1], BLOCK_SIZE, BLOCK_SIZE])
 
 def move_snake(x, y, direction):
     dx, dy = direction
@@ -40,7 +41,8 @@ def check_collision(x, y, snake_list):
     return None
 
 def food_position():
-    return None
+    return [random.randrange(0, WIDTH - BLOCK_SIZE, BLOCK_SIZE),
+            random.randrange(0, HEIGHT - BLOCK_SIZE, BLOCK_SIZE)]
 
 
 x = WIDTH // 2
@@ -90,8 +92,11 @@ while not exit_game:
         snake_length += 1
         food_pos = food_position()
 
-        
+    pygame.draw.rect(canvas, RED, [food_pos[0], food_pos[1], BLOCK_SIZE, BLOCK_SIZE])
+    draw_snake(snake_list)
+
+
     pygame.display.update()
-    clock.tick(3600)
+    clock.tick(FPS)
 
 pygame.quit()
