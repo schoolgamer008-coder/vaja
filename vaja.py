@@ -16,7 +16,7 @@ picture = pygame.image.load("pygameimage1.jpg")
 picture = pygame.transform.scale(picture, (WIDTH, HEIGHT))
 
 BLOCK_SIZE = 20
-FPS = 10
+FPS = 30
 
 WHITE = (255, 255, 255)
 RED = (200, 0, 0)
@@ -54,6 +54,30 @@ def food_position():
     return [random.randrange(0, WIDTH - BLOCK_SIZE, BLOCK_SIZE),
             random.randrange(0, HEIGHT - BLOCK_SIZE, BLOCK_SIZE)]
 
+def game_over_screen():
+    waiting = True
+
+    while waiting:
+        canvas.fill((0, 0, 0))
+
+        text_lose = font.render("You lost", True, RED)
+        text_restart = font.render("Press R to restart", True, WHITE)
+        text_quit = font.render("Press Q to quit", True, WHITE)
+
+        canvas.blit(text_lose, (WIDTH // 2 - text_lose.get_width() // 2, HEIGHT // 2 - 100))
+        canvas.blit(text_restart, (WIDTH // 2 - text_restart.get_width() // 2, HEIGHT // 2))
+        canvas.blit(text_quit, (WIDTH // 2 - text_quit.get_width() // 2, HEIGHT // 2 + 100))
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "quit"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return "restart"
+                if event.key == pygame.K_q:
+                    return "quit"
 
 x = WIDTH // 2
 y = HEIGHT // 2
@@ -86,15 +110,20 @@ while not exit_game:
     x,y = move_snake(x,y, direction)
 
     if check_collision(x, y, snake_list):
-        x = WIDTH // 2
-        y = HEIGHT // 2
+        moment = game_over_screen()
+        if moment == "quit":
+            exit_game = True
 
-        direction = [0, 0]
+        elif moment == "restart":
+            x = WIDTH // 2
+            y = HEIGHT // 2
 
-        snake_list = []
-        snake_length = 1
+            direction = [0, 0]
 
-        food_pos = food_position()
+            snake_list = []
+            snake_length = 1
+
+            food_pos = food_position()
 
     snake_list.append([x, y])
     if len(snake_list) > snake_length:
