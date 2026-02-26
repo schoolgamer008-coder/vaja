@@ -7,7 +7,7 @@ pygame.init()
 
 WIDTH, HEIGHT = 1920, 1080
 canvas = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Pygame")
+pygame.display.set_caption("Snake Game")
 
 exit_game = False
 clock = pygame.time.Clock()
@@ -24,10 +24,10 @@ GREEN = (0, 200, 0)
 
 font = pygame.font.SysFont(None, 50)
 
-def draw_score(score):
-    return None
+score = 0
 
 def draw_snake(snake_list):
+    
     for block in snake_list:
         pygame.draw.rect(canvas, GREEN, [block[0], block[1], BLOCK_SIZE, BLOCK_SIZE])
 
@@ -38,26 +38,29 @@ def move_snake(x, y, direction):
     return x, y
 
 def check_collision(x, y, snake_list):
-    if x<0 or x>= WIDTH:
+
+    if x < 0 or x >= WIDTH:
         return True
     
-    if y<0 or y>= HEIGHT:
+    if y < 0 or y >= HEIGHT:
         return True
-    
+
     for block in snake_list[:-1]:
-        if block == [x,y]:
+        if block == [x, y]:
             return True
-        
+
     return False
 
 def food_position():
+
     return [random.randrange(0, WIDTH - BLOCK_SIZE, BLOCK_SIZE),
-            random.randrange(0, HEIGHT - BLOCK_SIZE, BLOCK_SIZE)]
+            random.randrange(0, HEIGHT - BLOCK_SIZE, BLOCK_SIZE),]
 
 def game_over_screen():
     waiting = True
 
     while waiting:
+
         canvas.fill((0, 0, 0))
 
         text_lose = font.render("You lost", True, RED)
@@ -71,25 +74,26 @@ def game_over_screen():
         pygame.display.update()
 
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 return "quit"
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     return "restart"
+
                 if event.key == pygame.K_q:
                     return "quit"
 
 x = WIDTH // 2
 y = HEIGHT // 2
-
 direction = [0, 0]
-
 snake_list = []
 snake_length = 1
-
 food_pos = food_position()
 
 while not exit_game:
+
     canvas.blit(picture, (0, 0))
 
     for event in pygame.event.get():
@@ -98,44 +102,53 @@ while not exit_game:
             exit_game = True
 
         elif event.type == pygame.KEYDOWN:
+
             if event.key == pygame.K_LEFT and direction[0] == 0:
                 direction = [-BLOCK_SIZE, 0]
+
             if event.key == pygame.K_RIGHT and direction[0] == 0:
                 direction = [BLOCK_SIZE, 0]
+
             if event.key == pygame.K_UP and direction[1] == 0:
                 direction = [0, -BLOCK_SIZE]
+
             if event.key == pygame.K_DOWN and direction[1] == 0:
                 direction = [0, BLOCK_SIZE]
 
-    x,y = move_snake(x,y, direction)
+    x, y = move_snake(x, y, direction)
 
     if check_collision(x, y, snake_list):
-        moment = game_over_screen()
-        if moment == "quit":
-            exit_game = True
 
-        elif moment == "restart":
+        action = game_over_screen()
+
+        if action == "quit":
+            exit_game = True
+            break
+
+        elif action == "restart":
             x = WIDTH // 2
             y = HEIGHT // 2
-
             direction = [0, 0]
-
             snake_list = []
             snake_length = 1
-
             food_pos = food_position()
+            score = 0
 
     snake_list.append([x, y])
+
     if len(snake_list) > snake_length:
         del snake_list[0]
 
     if [x, y] == food_pos:
         snake_length += 1
+        score += snake_length
         food_pos = food_position()
 
     pygame.draw.rect(canvas, RED, [food_pos[0], food_pos[1], BLOCK_SIZE, BLOCK_SIZE])
     draw_snake(snake_list)
 
+    score_text = font.render(f"Score: {score}", True, WHITE)
+    canvas.blit(score_text, (50, 50))
 
     pygame.display.update()
     clock.tick(FPS)
