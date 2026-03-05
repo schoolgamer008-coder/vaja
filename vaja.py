@@ -35,6 +35,8 @@ WHITE = (255, 255, 255)
 RED = (200, 0, 0)
 GREEN = (0, 200, 0)
 
+snake_color = GREEN
+
 font = pygame.font.SysFont(None, 50)
 
 score = 0
@@ -42,7 +44,7 @@ score = 0
 def draw_snake(snake_list):
     
     for block in snake_list:
-        pygame.draw.rect(canvas, GREEN, [block[0], block[1], BLOCK_SIZE, BLOCK_SIZE])
+        pygame.draw.rect(canvas, snake_color, [block[0], block[1], BLOCK_SIZE, BLOCK_SIZE])
 
 def move_snake(x, y, direction):
     dx, dy = direction
@@ -127,6 +129,13 @@ while not exit_game:
 
             if event.key == pygame.K_DOWN and direction[1] == 0:
                 direction = [0, BLOCK_SIZE]
+
+            if event.key == pygame.K_SPACE:
+                snake_color = (
+                    random.randint(0,255),
+                    random.randint(0,255),
+                    random.randint(0,255)
+                )
 
     x, y = move_snake(x, y, direction)
 
