@@ -1,14 +1,5 @@
 # snake game
 
-"""
-#2. dodatna naloga:
-#naredi branch "multiplayer"
-#v tem branchu naredi logiko, da sta na zacetku igre 2 kaci, ena se upravlja z wasd, druga z gumbi s puscicami
-#ce se aca zabije vase, v drugo kaco ali v steno, izgubi
-
-#3. dodatna naloga
-#naredi merge obeh branchov 
-"""
 import pygame
 import random
 
